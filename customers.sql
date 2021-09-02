@@ -1,11 +1,20 @@
--- Show first order and number of orders by customer
-select 
-o.customer_id,
-c.name,
-c.email, 
-min(o.created_at) as first_order_at,
-count(*) as number_of_orders,
-from analytics-engineers-club.coffee_shop.orders o 
-join analytics-engineers-club.coffee_shop.customers c on o.customer_id = c.id
-group by o.customer_id, c.name, c.email
-order by first_order_at
+with customer_orders as (
+    select
+        customer_id,
+        count(*) as number_of_orders,
+        min(created_at) as first_order_at,
+    from analytics-engineers-club.coffee_shop.orders
+    group by customer_id
+)
+
+select
+    c.id AS customer_id,
+    c.name,
+    c.email,
+    co.first_order_at,
+    co.number_of_orders,
+
+from analytics-engineers-club.coffee_shop.customers as c
+left join customer_orders as co
+    on c.id = co.customer_id
+
