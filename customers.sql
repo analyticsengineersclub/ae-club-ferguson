@@ -1,3 +1,4 @@
+-- Show first order and number of orders by customer
 select 
 o.customer_id,
 c.name,
